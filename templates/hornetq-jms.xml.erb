@@ -10,8 +10,8 @@ if @connection_factories
       if conn_factory_element_name == "connectors" %>
    <connectors><%
          connection_factory_hash["connectors"].sort.each do |connector_name| %>
-      <connector-ref connector-name="<%= connector_name %>"/>  
-         <% end %>
+      <connector-ref connector-name="<%= connector_name %>"/><%
+          end %>
    </connectors><%
          else    
             if conn_factory_element_name == "entries" %>
@@ -29,11 +29,24 @@ if @connection_factories
   end 
 else %>
   <!-- No connection factories defined. --><% 
-end 
+end %>
 
-if @queues %>
-  
-  <!-- QUEUES not yet supported by the module, hornetq-jms.xml template needs to be adapted for this --><%
+<%
+if @queues 
+  @queues.keys.sort.each do |queue_name|
+  queue_hash = @queues[queue_name] %>
+  <queue name="<%= queue_name %>"><%
+    queue_hash.keys.sort.each do |queue_property|
+      if queue_property == 'entry'%>
+      <entry name="<%= queue_hash['entry'] %>"/><%
+      elsif queue_property == 'durable' %>
+      <durable><%= queue_hash['durable'] %></durable><%
+      else %>
+      UNSUPPORTED QUEUE_PROPERTY <%= queue_property %><%  
+      end
+    end%>
+  </queue><%
+  end
 else %>
   <!-- No queues defined --><%
 end 
