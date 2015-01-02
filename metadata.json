@@ -1,0 +1,15 @@
+{
+  "author": "pvbouwel",
+  "dependencies": [    
+  	{"name":"puppetlabs/stdlib","version_requirement":">= 4.2.0"}
+  ],
+  "license": "Apache License, Version 2.0",
+  "name": "pvbouwel-hornetq",
+  "operatingsystem_support": [],
+  "project_page": "https://github.com/pvbouwel/puppet-hornetq",
+  "requirements": [],
+  "source": "git@github.com:pvbouwel/puppet-hornetq.git",
+  "summary": "Setup HornetQ instances",
+  "tags": [],
+  "version": "0.1.0"
+}

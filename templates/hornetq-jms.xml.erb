@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<configuration xmlns="urn:hornetq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hornetq /schema/hornetq-jms.xsd">
+  <% if @connection_factories %>
+  <% @connection_factories.keys.sort.each do |connection_factory_name|
+    connection_factory_hash = @connection_factories[connection_factory_name] %>
+  <!-- Definition for connector <%= connection_factory_name %> -->
+  <connection-factory name="<%= connection_factory_name %>">
+    <% connection_factory_hash.keys.sort.each do |conn_factory_element_name| %>
+      <% if conn_factory_element_name == "connectors" %>
+        <connectors>
+        <% connection_factory_hash["connectors"].keys.sort.each do |connector_name| %>
+         <connector-ref connector-name="<%= connector_name %>"/>  
+        <% done %>
+        </connectors>
+      <% else %>
+        <% if conn_factory_element_name == "entries" %>
+          <entries>
+          <% connection_factory_hash["entries"].keys.sort.each do |name| %>
+            <entry name="<%= name %>"/>  
+          <% done %>
+          </entries>
+        <% else %>
+         <<%= conn_factory_element_name %>><%= connection_factory_hash[conn_factory_element_name] %></<%= conn_factory_element_name %>>
+        <% end %>  
+      <% end %>
+    <% end %>
+    
+  </connection-factory>
+  <% end %>
+  <% else %>
+  <!-- No connection factories defined. -->
+  <% end %>
+  
+  <% if @queues %>
+    <!-- QUEUES not yet supported by the module, hornetq-jms.xml template needs to be adapted for this -->
+  <% else %>
+    <!-- No topics defined -->
+  <% end %>
+  
+  <% if @topics %>
+    <!-- TOPICS not yet supported by the module, hornetq-jms.xml template needs to be adapted for this -->
+  <% else %>
+    <!-- No topics defined -->
+  <% end %> 
+</configuration>
