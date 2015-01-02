@@ -38,7 +38,7 @@ define hornetq::instance (
   $largemessagesdir = undef,
   $owner            = root,
   $pagingdir        = undef,
-  $templates        = undef,
+  $templates        = {},
 ) {
   
   $instancename        = $title
@@ -101,7 +101,7 @@ define hornetq::instance (
       $connection_factories = $jmsconfig['topics']  
     }
     
-    if ! $templates['jms_config.xml'] {
+    if ! has_key($templates, 'jms_config.xml') {
       $hornetq_jms_xml_content = template('hornetq/hornetq-jms.xml.erb')
     } else {
       $hornetq_jms_xml_content = template($templates['jms_config.xml'])
