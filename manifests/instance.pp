@@ -15,6 +15,7 @@
 #   will hold all the data subdirectories unless they where configured
 #   to reside elsewhere. Default is ${basedir}/${instance_name}/data.
 # - group is the OS group that owns the HornetQ instance (default=root).
+# - jmsconfig is a hash that defines a jms-config.xml configuration
 # - journaldir is the location of the "journal-directory". If the parameter is
 #   not set it will default to ${datadir}/journal
 # - largemessagesdir is the location of the "large-messages-directory. If the 
@@ -22,17 +23,22 @@
 # - owner is the OS user that owns the HornetQ instance (default=root).
 # - pagingdir is the location of the "paging-directory". If the parameter is
 #   not set it will default to ${datadir}/paging
+# - templates is a hash in which you can override the used templates currently
+#   the following templates can be overwritten:
+#      * jms_config.xml (jms-config.xml)
 define hornetq::instance (
   $basedir          = $::hornetq::basedir,
   $bindingsdir      = undef,
   $confdir          = undef,
   $datadir          = undef,
   $ensure           = present,
+  $jmsconfig        = {},
   $journaldir       = undef,
   $group            = root,
   $largemessagesdir = undef,
   $owner            = root,
   $pagingdir        = undef,
+  $templates        = undef,
 ) {
   
   $instancename        = $title
@@ -80,9 +86,34 @@ define hornetq::instance (
   }
   
   file { ["$_instancedir","$_confdir", "$_datadir", "$_pagingdir", "$_bindingsdir", "$_journaldir", "$_largemessagesdir"]:
-     ensure => present,
+     ensure => directory,
      owner => $owner,
      group => $group
   }
+  if $jmsconfig != {} {
+    if has_key($jmsconfig, 'connection_factories') {
+      $connection_factories = $jmsconfig['connection_factories']  
+    }
+    if has_key($jmsconfig, 'queues') {
+      $connection_factories = $jmsconfig['queues']  
+    }
+    if has_key($jmsconfig, 'topics') {
+      $connection_factories = $jmsconfig['topics']  
+    }
+    
+    if ! $templates['jms_config.xml'] {
+      $hornetq_jms_xml_content = template('hornetq/hornetq-jms.xml.erb')
+    } else {
+      $hornetq_jms_xml_content = template($templates['jms_config.xml'])
+    }
+    
+    file { "${_confdir}/hornetq-jms.xml":
+      ensure => present,
+      owner => $owner,
+      group => $group,
+      content => "$hornetq_jms_xml_content"
+    }
+  }
+  
   
 }
