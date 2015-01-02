@@ -180,7 +180,7 @@ define hornetq::instance (
     $hornetq_run_scrip_content = template($templates['run.sh'])
   }
   
-  file { "${_bindir}/runs.sh":
+  file { "${_bindir}/run.sh":
     ensure => present,
     owner => $owner,
     group => $group,

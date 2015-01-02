@@ -8,7 +8,7 @@ export HORNETQ_BIN=${HORNETQ_HOME}/bin
 
 # By default, the server is started in the non-clustered standalone configuration
 
-CONFIG_DIR=<%= @confdir %>
+CONFIG_DIR=<%= @_confdir %>
 FILENAME=hornetq-beans.xml
 
 export CLASSPATH=$CONFIG_DIR:$HORNETQ_HOME/schemas/
