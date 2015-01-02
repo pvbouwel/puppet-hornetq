@@ -95,10 +95,10 @@ define hornetq::instance (
       $connection_factories = $jmsconfig['connection_factories']  
     }
     if has_key($jmsconfig, 'queues') {
-      $connection_factories = $jmsconfig['queues']  
+      $queues = $jmsconfig['queues']  
     }
     if has_key($jmsconfig, 'topics') {
-      $connection_factories = $jmsconfig['topics']  
+      $topics = $jmsconfig['topics']  
     }
     
     if ! has_key($templates, 'jms_config.xml') {
