@@ -11,9 +11,10 @@
 # Sample Usage:
 #
 class hornetq (
+  $basedir = '/opt',
   $install_from_source = false,
   $instances = hiera_hash('hornetq::instances', undef),
-  $basedir = '/opt'
+  $version   = "2.4.0"
 ) {
   include hornetq::install
   

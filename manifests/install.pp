@@ -2,7 +2,7 @@ class hornetq::install (
   $install_from_source = $::hornetq::install_from_source,
   $package_name = "hornetq",
   $release   = "1",
-  $version   = "2.4.0",
+  $version   = $::hornetq::version,
 ) {
   if $install_from_source {
     validate_bool($install_from_source)

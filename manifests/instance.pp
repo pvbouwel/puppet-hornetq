@@ -8,6 +8,7 @@
 #   and data that is instance-specific.
 # - $bindingsdir is the location of the "bindings-directory". If the parameter 
 #   is not set it will default to ${datadir}/bindings
+# - bindir is the directory with the executables
 # - $confdir is the location of the configuration directory.  This directory
 #   will hold the configuration specific to this instance. Default is 
 #   ${basedir}/${instance_name}/conf
@@ -20,6 +21,7 @@
 #   not set it will default to ${datadir}/journal
 # - largemessagesdir is the location of the "large-messages-directory. If the 
 #   parameter is not set it will default to ${datadir}/large-messages
+# - logdir is the directory to which logs will be written.
 # - owner is the OS user that owns the HornetQ instance (default=root).
 # - pagingdir is the location of the "paging-directory". If the parameter is
 #   not set it will default to ${datadir}/paging
@@ -29,16 +31,19 @@
 define hornetq::instance (
   $basedir          = $::hornetq::basedir,
   $bindingsdir      = undef,
+  $bindir           = undef,
   $confdir          = undef,
   $datadir          = undef,
   $ensure           = present,
+  $group            = root,
   $jmsconfig        = {},
   $journaldir       = undef,
-  $group            = root,
+  $logdir           = undef,
   $largemessagesdir = undef,
   $owner            = root,
   $pagingdir        = undef,
   $templates        = {},
+  $version          = $::hornetq::version,
 ) {
   
   $instancename        = $title
@@ -59,6 +64,18 @@ define hornetq::instance (
     $_datadir = $datadir
   }else {
     $_datadir = "${_instancedir}/data"
+  }
+  
+  if $logdir {
+    $_logdir = $logdir
+  }else {
+    $_logdir = "${_instancedir}/logs"
+  }
+  
+  if $bindir {
+    $_bindir = $bindir
+  }else {
+    $_bindir = "${_instancedir}/bin"
   }
   
   if $pagingdir {
@@ -85,11 +102,14 @@ define hornetq::instance (
     $_largemessagesdir = "${_datadir}/large-messages"
   }
   
-  file { ["$_instancedir","$_confdir", "$_datadir", "$_pagingdir", "$_bindingsdir", "$_journaldir", "$_largemessagesdir"]:
+  
+  
+  file { ["$_instancedir","$_confdir", "$_datadir", "$_pagingdir", "$_bindingsdir", "$_journaldir", "$_largemessagesdir", "$_bindir", "$_logdir"]:
      ensure => directory,
      owner => $owner,
      group => $group
   }
+  
   if $jmsconfig != {} {
     if has_key($jmsconfig, 'connection_factories') {
       $connection_factories = $jmsconfig['connection_factories']  
@@ -115,5 +135,70 @@ define hornetq::instance (
     }
   }
   
+  if ! has_key($templates, 'hornetq-configuration.xml') {
+    $hornetq_configuration_xml_content = template('hornetq/hornetq-configuration.xml.erb')
+  } else {
+    $hornetq_configuration_xml_content = template($templates['hornetq-configuration.xml'])
+  }
+
+  file { "${_confdir}/hornetq-configuration.xml":
+    ensure => present,
+    owner => $owner,
+    group => $group,
+    content => "$hornetq_configuration_xml_content"
+  }
   
+  if ! has_key($templates, 'logging.properties') {
+    $hornetq_logging_properties_content = template('hornetq/logging.properties.erb')
+  } else {
+    $hornetq_logging_properties_content = template($templates['logging.properties'])
+  }
+  
+  file { "${_confdir}/logging.properties":
+    ensure => present,
+    owner => $owner,
+    group => $group,
+    content => "$hornetq_logging_properties_content"
+  }
+  
+  if ! has_key($templates, 'hornetq-beans.xml') {
+    $hornetq_beans_xml_content = template('hornetq/hornetq-beans.xml.erb')
+  } else {
+    $hornetq_beans_xml_content = template($templates['hornetq-beans.xml'])
+  }
+  
+  file { "${_confdir}/hornetq-beans.xml":
+    ensure => present,
+    owner => $owner,
+    group => $group,
+    content => "$hornetq_beans_xml_content"
+  }
+  
+  if ! has_key($templates, 'run.sh') {
+    $hornetq_run_scrip_content = template('hornetq/run.sh.erb')
+  } else {
+    $hornetq_run_scrip_content = template($templates['run.sh'])
+  }
+  
+  file { "${_bindir}/runs.sh":
+    ensure => present,
+    owner => $owner,
+    group => $group,
+    content => "$hornetq_run_scrip_content",
+    mode  => 'u+rx'
+  }
+  
+  if ! has_key($templates, 'stop.sh') {
+    $hornetq_stop_scrip_content = template('hornetq/stop.sh.erb')
+  } else {
+    $hornetq_stop_scrip_content = template($templates['stop.sh'])
+  }
+  
+  file { "${_bindir}/stop.sh":
+    ensure => present,
+    owner => $owner,
+    group => $group,
+    content => "$hornetq_stop_scrip_content",
+    mode  => 'u+rx'
+  }
 }

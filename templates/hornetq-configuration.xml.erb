@@ -1,0 +1,63 @@
+<configuration xmlns="urn:hornetq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hornetq /schema/hornetq-configuration.xsd">
+   <paging-directory><%= @pagingdir %></paging-directory>
+   <bindings-directory><%= @bindingsdir %></bindings-directory>
+   <journal-directory><%= @journaldir %></journal-directory>
+   <journal-min-files>10</journal-min-files>
+   <large-messages-directory><%= @largemessagesdir %></large-messages-directory>
+
+   <connectors>
+      <connector name="netty">
+         <factory-class>org.hornetq.core.remoting.impl.netty.NettyConnectorFactory</factory-class>
+         <param key="host"  value="${hornetq.remoting.netty.host:0.0.0.0}"/>
+         <param key="port"  value="${hornetq.remoting.netty.port:5445}"/>
+      </connector>
+
+      <connector name="netty-throughput">
+         <factory-class>org.hornetq.core.remoting.impl.netty.NettyConnectorFactory</factory-class>
+         <param key="host"  value="${hornetq.remoting.netty.host:0.0.0.0}"/>
+         <param key="port"  value="${hornetq.remoting.netty.batch.port:5455}"/>
+         <param key="batch-delay" value="50"/>
+      </connector>
+   </connectors>
+
+   <acceptors>
+      <acceptor name="netty">
+         <factory-class>org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory</factory-class>
+         <param key="host"  value="${hornetq.remoting.netty.host:0.0.0.0}"/>
+         <param key="port"  value="${hornetq.remoting.netty.port:5445}"/>
+      </acceptor>
+
+      <acceptor name="netty-throughput">
+         <factory-class>org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory</factory-class>
+         <param key="host"  value="${hornetq.remoting.netty.host:0.0.0.0}"/>
+         <param key="port"  value="${hornetq.remoting.netty.batch.port:5455}"/>
+         <param key="batch-delay" value="50"/>
+         <param key="direct-deliver" value="false"/>
+      </acceptor>
+   </acceptors>
+
+   <security-settings>
+      <security-setting match="#">
+         <permission type="createNonDurableQueue" roles="guest"/>
+         <permission type="deleteNonDurableQueue" roles="guest"/>
+         <permission type="consume" roles="guest"/>
+         <permission type="send" roles="guest"/>
+      </security-setting>
+   </security-settings>
+
+   <address-settings>
+      <!--default for catch all-->
+      <address-setting match="#">
+         <dead-letter-address>jms.queue.DLQ</dead-letter-address>
+         <expiry-address>jms.queue.ExpiryQueue</expiry-address>
+
+         <max-size-bytes>504857600</max-size-bytes>
+         <max-delivery-attempts>1</max-delivery-attempts>
+         <message-counter-history-day-limit>10</message-counter-history-day-limit>
+         <address-full-policy>BLOCK</address-full-policy>
+      </address-setting>
+   </address-settings>
+
+</configuration>
+
+<%# comment because otherwise closing xml-tag is not placed %>
