@@ -11,7 +11,7 @@ export HORNETQ_BIN=${HORNETQ_HOME}/bin
 CONFIG_DIR=<%= @_confdir %>
 FILENAME=hornetq-beans.xml
 
-export CLASSPATH=$CONFIG_DIR:$HORNETQ_HOME/schemas/
+export CLASSPATH=$CONFIG_DIR:$HORNETQ_HOME/schema/
 
 # Use the following line to run with different ports
 #export CLUSTER_PROPS="-Djnp.port=1099 -Djnp.rmiPort=1098 -Djnp.host=localhost -Dhornetq.remoting.netty.host=localhost -Dhornetq.remoting.netty.port=5445"

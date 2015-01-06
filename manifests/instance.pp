@@ -201,4 +201,18 @@ define hornetq::instance (
     content => "$hornetq_stop_scrip_content",
     mode  => 'u+rx'
   }
+  
+  if ! has_key($templates, 'jndi.properties') {
+    $hornetq_jndi_properties_content = template('hornetq/jndi.properties.erb')
+  } else {
+    $hornetq_jndi_properties_content = template($templates['jndi.properties'])
+  }
+  
+  file { "${_confdir}/jndi.properties":
+    ensure => present,
+    owner => $owner,
+    group => $group,
+    content => "$hornetq_jndi_properties_content",
+    mode  => 'u+r'
+  }
 }
