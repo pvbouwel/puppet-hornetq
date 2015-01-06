@@ -1,9 +1,9 @@
 <configuration xmlns="urn:hornetq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hornetq /schema/hornetq-configuration.xsd">
-   <paging-directory><%= @pagingdir %></paging-directory>
-   <bindings-directory><%= @bindingsdir %></bindings-directory>
-   <journal-directory><%= @journaldir %></journal-directory>
+   <paging-directory><%= @_pagingdir %></paging-directory>
+   <bindings-directory><%= @_bindingsdir %></bindings-directory>
+   <journal-directory><%= @_journaldir %></journal-directory>
    <journal-min-files>10</journal-min-files>
-   <large-messages-directory><%= @largemessagesdir %></large-messages-directory>
+   <large-messages-directory><%= @_largemessagesdir %></large-messages-directory>
 
    <connectors>
       <connector name="netty">
