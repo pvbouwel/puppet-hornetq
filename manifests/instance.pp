@@ -215,4 +215,16 @@ define hornetq::instance (
     content => "$hornetq_jndi_properties_content",
     mode  => 'u+r'
   }
+  
+  if ! has_key($templates, 'hornetq-service-script.sh') {
+    $hornetq_service_script_content = template('hornetq/hornetq-service-script.sh.erb')
+  } else {
+    $hornetq_service_script_content = template($templates['hornetq-service-script.sh'])
+  }
+  
+  file { "/etc/init.d/hornet_${instancename}.sh":
+    ensure => present,
+    content => "$hornetq_service_script_content",
+    mode  => 'u+rx'
+  }
 }

@@ -2,6 +2,8 @@
 #------------------------------------------------
 # Simple shell-script to run HornetQ standalone
 #------------------------------------------------
+<%# PUPPET MODULE EXPECTS THAT CWD WHEN RUNNING THIS IS OF NO IMPORTANCE, SO MAKE SURE IF YOU CREATE YOUR OWN TEMPLATE
+    TO ADHERE TO THIS %>
 
 export HORNETQ_HOME=/usr/local/hornetq/<%= @version %>
 export HORNETQ_BIN=${HORNETQ_HOME}/bin
