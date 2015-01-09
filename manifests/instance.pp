@@ -37,32 +37,41 @@
 # - owner is the OS user that owns the HornetQ instance (default=root).
 # - pagingdir is the location of the "paging-directory". If the parameter is
 #   not set it will default to ${datadir}/paging
+# - security_settings is a hash that holds the security settings it has the 
+#   following form: ```
+#     security-settings:
+#       "match-string":
+#         type:  'createNonDurableQueue'
+#         roles: 'guest'```
+#   So the match attribute of the security-setting is the key in the 
+#   security-settings hash
 # - start_at_os_boot is a boolean that states whether the service should start
 #   with system boot.
 # - templates is a hash in which you can override the used templates currently
 #   the following templates can be overwritten:
 #      * jms_config.xml (jms-config.xml)
 define hornetq::instance (
-  $acceptors        = undef,
-  $auto_start       = false,
-  $basedir          = $::hornetq::basedir,
-  $bindingsdir      = undef,
-  $bindir           = undef,
-  $confdir          = undef,
-  $connectors       = undef,
-  $datadir          = undef,
-  $ensure           = present,
-  $group            = root,
-  $jmsconfig        = {},
-  $journaldir       = undef,
-  $logdir           = undef,
-  $logfile          = undef,
-  $largemessagesdir = undef,
-  $owner            = root,
-  $pagingdir        = undef,
-  $start_at_os_boot = true,
-  $templates        = {},
-  $version          = $::hornetq::version,
+  $acceptors         = undef,
+  $auto_start        = false,
+  $basedir           = $::hornetq::basedir,
+  $bindingsdir       = undef,
+  $bindir            = undef,
+  $confdir           = undef,
+  $connectors        = undef,
+  $datadir           = undef,
+  $ensure            = present,
+  $group             = root,
+  $jmsconfig         = {},
+  $journaldir        = undef,
+  $logdir            = undef,
+  $logfile           = undef,
+  $largemessagesdir  = undef,
+  $owner             = root,
+  $pagingdir         = undef,
+  $security_settings = undef,
+  $start_at_os_boot  = true,
+  $templates         = {},
+  $version           = $::hornetq::version,
 ) {
   
   $instancename        = $title

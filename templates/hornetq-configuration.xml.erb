@@ -75,15 +75,27 @@ end%>
    </acceptors>
    
    
-   <security-settings>
+   <security-settings><%
+if not @security_settings
       <security-setting match="#">
          <permission type="createNonDurableQueue" roles="guest"/>
          <permission type="deleteNonDurableQueue" roles="guest"/>
          <permission type="consume" roles="guest"/>
          <permission type="send" roles="guest"/>
       </security-setting>
+else
+  @security_settings.keys.sort.each do |match| %>
+      <security-setting match="<%= match %>">
+     if not @security_settings[match][type] or not @security_settings[match][roles] %>
+       ERROR: Puppet config needs both type and role per security setting with match attribute <%= match %>. <% 
+     else
+         <permission type="<% @security_settings[match][type] %>" roles="<% @security_settings[match][roles] %>"/>
+     end 
+      </security-setting><%
+  end  
+end %>
    </security-settings>
-
+   
    <address-settings>
       <!--default for catch all-->
       <address-setting match="#">
