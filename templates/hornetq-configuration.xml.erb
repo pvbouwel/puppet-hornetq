@@ -51,9 +51,9 @@ if not @acceptors %>
          <param key="direct-deliver" value="false"/>
       </acceptor><% 
 else 
-  @acceptors.keys.sort.each do |acceptor_name| %>
+  @acceptors.keys.sort.each do |acceptor_name| %><%
     #IF an acceptor_name starts with NONAME, no name should be set (according to xsd schema acceptor name is optional
-    if acceptor_name.match(/^NONAME/)%>
+%><%if acceptor_name.match(/^NONAME/) %>
       <acceptor><%
     else %>
       <acceptor name="<%= acceptor_name %>"><%
