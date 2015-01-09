@@ -41,10 +41,11 @@
 #   following form: ```
 #     security-settings:
 #       "match-string":
-#         type:  'createNonDurableQueue'
-#         roles: 'guest'```
+#         'type':  'roles'
 #   So the match attribute of the security-setting is the key in the 
-#   security-settings hash
+#   security-settings hash and then you have a hash where the key is the 
+#   permission type and the value contains the roles that have this 
+#   permission
 # - start_at_os_boot is a boolean that states whether the service should start
 #   with system boot.
 # - templates is a hash in which you can override the used templates currently

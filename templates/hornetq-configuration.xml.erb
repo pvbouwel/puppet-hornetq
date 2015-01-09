@@ -86,10 +86,8 @@ if not @security_settings %>
 else
   @security_settings.keys.sort.each do |match| %>
       <security-setting match="<%= match %>"> <%
-     if not @security_settings[match][type] or not @security_settings[match][roles] %>
-       ERROR: Puppet config needs both type and role per security setting with match attribute <%= match %>. <% 
-     else %>
-         <permission type="<% @security_settings[match][type] %>" roles="<% @security_settings[match][roles] %>"/><%
+     @security_settings[match].keys.sort.each do |type| %>
+         <permission type="<%= type %>" roles="<%= @security_settings[match][type] %>"/><%
      end %>
       </security-setting><%
   end  
