@@ -8,6 +8,16 @@
 #   map with at least the 'factory-class' key and if necessary other key-value
 #   pairs to define configuration.  If you want an acceptor without a name you
 #   should use a key for your acceptor that starts with 'NONAME'
+# - address_settings is a hash that holds the address settings it has the 
+#   following form: ```
+#     address_settings:
+#       "match-string":
+#         'element-name':  'element-value'
+#         'element-name2':  'element-value2'
+#         ...```
+#   So the match attribute of the address-setting is the key in the 
+#   address_settings hash and then you have a hash where the key is the 
+#   element-name and the value is the element-value 
 # - $auto_start is a boolean which determines whether puppet should start
 #   the instance on each puppet run (when not instance is stopped)
 # - $basedir is the root of the HornetQ installation. This parameter will
@@ -39,9 +49,9 @@
 #   not set it will default to ${datadir}/paging
 # - security_settings is a hash that holds the security settings it has the 
 #   following form: ```
-#     security-settings:
+#     security_settings:
 #       "match-string":
-#         'type':  'roles'
+#         'type':  'roles'```
 #   So the match attribute of the security-setting is the key in the 
 #   security-settings hash and then you have a hash where the key is the 
 #   permission type and the value contains the roles that have this 
@@ -53,6 +63,7 @@
 #      * jms_config.xml (jms-config.xml)
 define hornetq::instance (
   $acceptors         = undef,
+  $address_settings  = undef,
   $auto_start        = false,
   $basedir           = $::hornetq::basedir,
   $bindingsdir       = undef,

@@ -93,8 +93,9 @@ else
   end  
 end %>
    </security-settings>
-   
-   <address-settings>
+
+   <address-settings><%
+if not @address_settings %>
       <!--default for catch all-->
       <address-setting match="#">
          <dead-letter-address>jms.queue.DLQ</dead-letter-address>
@@ -104,8 +105,22 @@ end %>
          <max-delivery-attempts>1</max-delivery-attempts>
          <message-counter-history-day-limit>10</message-counter-history-day-limit>
          <address-full-policy>BLOCK</address-full-policy>
-      </address-setting>
-   </address-settings>
+      </address-setting><%
+else
+  @address_settings.keys.sort.each do |match| %>
+      <address-setting match="<%= match %>"> <%
+    @address_settings[match].keys.sort.each do |name|
+      value = @address_settings[match][name]
+      if name == 'address-full-policy' and not [ 'DROP', 'FAIL', 'PAGE', 'BLOCK'].include? value
+        fail("address-full-policy in address_settings needs to be DROP, FAIL, PAGE or BLOCK")
+      else %>
+        <<%= name %>><%= value %></<%= name %>><%
+      end
+    end %>
+      </address-setting><%
+  end  
+end %>
+   </address-settings>   
 
 </configuration>
 
