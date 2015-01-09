@@ -69,7 +69,7 @@ function is_process_running() {
 case "$1" in
    start)
      printf "%-50s" "Starting $NAME..."
-     /bin/su $USER -c $DAEMON_PATH/run.sh
+     /bin/su $USER -c $DAEMON_PATH/run.sh &>/dev/null
      sleep 1
      set_nr_processes
      if [ ! "$NR_PROCESSES" = "1" ]
@@ -107,7 +107,7 @@ case "$1" in
     set_nr_processes
     if [ "$NR_PROCESSES" = "1" ]
     then
-      /bin/su $USER -c $DAEMON_PATH/stop.sh
+      /bin/su $USER -c $DAEMON_PATH/stop.sh &>/dev/null
       echo "Ok"
       if [ -f $PIDFILE ]; then
         rm -f $PIDFILE
