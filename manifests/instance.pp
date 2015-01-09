@@ -156,7 +156,8 @@ define hornetq::instance (
       ensure => present,
       owner => $owner,
       group => $group,
-      content => "$hornetq_jms_xml_content"
+      content => "$hornetq_jms_xml_content",
+      notify => Service["hornet_${instancename}.sh"]
     }
   }
   
@@ -170,7 +171,8 @@ define hornetq::instance (
     ensure => present,
     owner => $owner,
     group => $group,
-    content => "$hornetq_configuration_xml_content"
+    content => "$hornetq_configuration_xml_content",
+    notify => Service["hornet_${instancename}.sh"]
   }
   
   if ! has_key($templates, 'logging.properties') {
@@ -183,7 +185,8 @@ define hornetq::instance (
     ensure => present,
     owner => $owner,
     group => $group,
-    content => "$hornetq_logging_properties_content"
+    content => "$hornetq_logging_properties_content",
+    notify => Service["hornet_${instancename}.sh"]
   }
   
   if ! has_key($templates, 'hornetq-beans.xml') {
@@ -196,7 +199,8 @@ define hornetq::instance (
     ensure => present,
     owner => $owner,
     group => $group,
-    content => "$hornetq_beans_xml_content"
+    content => "$hornetq_beans_xml_content",
+    notify => Service["hornet_${instancename}.sh"]
   }
   
   if ! has_key($templates, 'run.sh') {
@@ -210,7 +214,8 @@ define hornetq::instance (
     owner => $owner,
     group => $group,
     content => "$hornetq_run_scrip_content",
-    mode  => 'u+rx'
+    mode  => 'u+rx',
+    notify => Service["hornet_${instancename}.sh"]
   }
   
   if ! has_key($templates, 'stop.sh') {
@@ -224,7 +229,8 @@ define hornetq::instance (
     owner => $owner,
     group => $group,
     content => "$hornetq_stop_scrip_content",
-    mode  => 'u+rx'
+    mode  => 'u+rx',
+    notify => Service["hornet_${instancename}.sh"]
   }
   
   if ! has_key($templates, 'jndi.properties') {
@@ -238,7 +244,8 @@ define hornetq::instance (
     owner => $owner,
     group => $group,
     content => "$hornetq_jndi_properties_content",
-    mode  => 'u+r'
+    mode  => 'u+r',
+    notify => Service["hornet_${instancename}.sh"]
   }
   
   if ! has_key($templates, 'hornetq-service-script.sh') {
