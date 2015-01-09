@@ -48,6 +48,20 @@ function report_running() {
   echo "Running" && exit 0
 }
 
+#Return 0 if hornetQ is live
+function is_started_succesfully() {
+  tail -n 10000 <%= @_logdir %>/<%= @_logfile %> | grep "Server is now live"
+  result="$?"
+  return "$result"
+}
+
+function rotate_log() {
+  if [ -f <%= @_logdir %>/<%= @_logfile %> ]
+  then
+    mv "<%= @_logdir %>/<%= @_logfile %>"{,`date +%H%M%S_%d%m%Y`}
+  fi
+}
+  
 #if process is running return 0 otherwise 1
 function is_pidfile_process_running() {
   PID=`cat "$1"`
@@ -68,7 +82,8 @@ function is_process_running() {
 
 case "$1" in
    start)
-     printf "%-50s" "Starting $NAME..."
+     echo -n "Starting $NAME..."
+     rotate_log
      /bin/su $USER -c $DAEMON_PATH/run.sh &>/dev/null
      sleep 1
      set_nr_processes
@@ -81,8 +96,28 @@ case "$1" in
        exit 4
      else
        write_pidfile "$PIDFILE"
-       echo "Ok"
-       exit 0
+       counter=0
+       timeout=15
+       while [ "1" = "1" ]
+       do
+         is_started_succesfully
+         if [ "$?" = "0" ]
+         then
+           echo "Ok"
+           exit 0 
+         else
+           if [ "$counter" = "$timeout" ]
+           then
+             echo "Timed out"
+             exit 1
+           else
+             echo -n "."
+             sleep 10
+             counter=$((counter+1))
+           fi
+         fi
+       done
+       end
      fi
      ;;
   status)

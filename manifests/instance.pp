@@ -26,6 +26,7 @@
 # - largemessagesdir is the location of the "large-messages-directory. If the 
 #   parameter is not set it will default to ${datadir}/large-messages
 # - logdir is the directory to which logs will be written.
+# - logdir is the filename to which logs will be written.
 # - owner is the OS user that owns the HornetQ instance (default=root).
 # - pagingdir is the location of the "paging-directory". If the parameter is
 #   not set it will default to ${datadir}/paging
@@ -44,6 +45,7 @@ define hornetq::instance (
   $jmsconfig        = {},
   $journaldir       = undef,
   $logdir           = undef,
+  $logfile          = undef,
   $largemessagesdir = undef,
   $owner            = root,
   $pagingdir        = undef,
@@ -75,6 +77,12 @@ define hornetq::instance (
     $_logdir = $logdir
   }else {
     $_logdir = "${_instancedir}/logs"
+  }
+  
+  if $logfile {
+    $_logfile = $logfile
+  }else {
+    $_logfile = "hornetq.log"
   }
   
   if $bindir {

@@ -47,7 +47,7 @@ handler.FILE=org.jboss.logmanager.handlers.FileHandler
 handler.FILE.level=FINE
 handler.FILE.properties=autoFlush,fileName
 handler.FILE.autoFlush=true
-handler.FILE.fileName=<%= @_logdir %>/hornetq.log
+handler.FILE.fileName=<%= @_logdir %>/<%= @_logfile %>
 handler.FILE.formatter=PATTERN
 
 # Formatter pattern configuration
