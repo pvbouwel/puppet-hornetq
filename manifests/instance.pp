@@ -3,6 +3,13 @@
 # This define installs an instance of HornetQ.
 #
 # Parameters:
+# - $acceptors contains the acceptors defined for the HornetQ. acceptors is
+#   a hash map where the key is the connector name and the value is a new hash
+#   map with at least the 'factory-class' key and if necessary other key-value
+#   pairs to define configuration.  If you want an acceptor without a name you
+#   should use a key for your acceptor that starts with 'NONAME'
+# - $auto_start is a boolean which determines whether puppet should start
+#   the instance on each puppet run (when not instance is stopped)
 # - $basedir is the root of the HornetQ installation. This parameter will
 #   not affect the HornetQ executable.  It will only impact configuration
 #   and data that is instance-specific.
@@ -30,10 +37,14 @@
 # - owner is the OS user that owns the HornetQ instance (default=root).
 # - pagingdir is the location of the "paging-directory". If the parameter is
 #   not set it will default to ${datadir}/paging
+# - start_at_os_boot is a boolean that states whether the service should start
+#   with system boot.
 # - templates is a hash in which you can override the used templates currently
 #   the following templates can be overwritten:
 #      * jms_config.xml (jms-config.xml)
 define hornetq::instance (
+  $acceptors        = undef,
+  $auto_start       = false,
   $basedir          = $::hornetq::basedir,
   $bindingsdir      = undef,
   $bindir           = undef,
@@ -49,6 +60,7 @@ define hornetq::instance (
   $largemessagesdir = undef,
   $owner            = root,
   $pagingdir        = undef,
+  $start_at_os_boot = true,
   $templates        = {},
   $version          = $::hornetq::version,
 ) {
@@ -239,5 +251,16 @@ define hornetq::instance (
     ensure => present,
     content => "$hornetq_service_script_content",
     mode  => 'u+rx'
+  }
+  
+  if $auto_start {
+    $service_ensure = running
+  } else {
+    $service_ensure = stopped
+  }
+  
+  service{ "hornet_${instancename}.sh":
+    ensure => $service_ensure,
+    enable => $start_at_os_boot
   }
 }

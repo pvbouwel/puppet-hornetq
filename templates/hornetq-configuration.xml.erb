@@ -35,24 +35,45 @@ else
     </connector>
 <%end
 end%>
-   </connectors>
-   
-   <acceptors>
+    <acceptors><% 
+if not @acceptors %>
       <acceptor name="netty">
          <factory-class>org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory</factory-class>
          <param key="host"  value="${hornetq.remoting.netty.host:0.0.0.0}"/>
          <param key="port"  value="${hornetq.remoting.netty.port:5445}"/>
       </acceptor>
-
+     
       <acceptor name="netty-throughput">
          <factory-class>org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory</factory-class>
          <param key="host"  value="${hornetq.remoting.netty.host:0.0.0.0}"/>
          <param key="port"  value="${hornetq.remoting.netty.batch.port:5455}"/>
          <param key="batch-delay" value="50"/>
          <param key="direct-deliver" value="false"/>
+      </acceptor><% 
+else 
+  @acceptors.keys.sort.each do |acceptor_name| %>
+    #IF an acceptor_name starts with NONAME, no name should be set (according to xsd schema acceptor name is optional
+    if acceptor_name.match(/^NONAME/)%>
+      <acceptor><%
+    else %>
+      <acceptor name="<%= acceptor_name %>"><%
+    end
+    if @acceptors[acceptor_name] and @acceptors[acceptor_name]['factory-class'] %>
+        <factory-class><%= @acceptors[acceptor_name]['factory-class'] %></factory-class><%
+      @acceptors[acceptor_name].keys.sort.each do |key| 
+        if key != 'factory-class'%>
+        <param key="<%= key %>" value="<%= @acceptors[acceptor_name][key] %>"/><%
+        end
+      end
+    else %>
+      ERROR: Puppet config is bad acceptor <%= acceptor_name %> should have a factory-class set.<%
+    end%>
       </acceptor>
-   </acceptors>
-
+<%end
+end%>
+    </acceptors>
+   
+   
    <security-settings>
       <security-setting match="#">
          <permission type="createNonDurableQueue" roles="guest"/>
