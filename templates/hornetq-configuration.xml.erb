@@ -21,21 +21,22 @@ if not @connectors %>
       </connector><% 
 else 
   @connectors.keys.sort.each do |connector_name| %>
-    <connector name="<%= connector_name %>"><%
+      <connector name="<%= connector_name %>"><%
     if @connectors[connector_name] and @connectors[connector_name]['factory-class'] %>
-      <factory-class><%= @connectors[connector_name]['factory-class'] %></factory-class><%
+         <factory-class><%= @connectors[connector_name]['factory-class'] %></factory-class><%
       @connectors[connector_name].keys.sort.each do |key| 
         if key != 'factory-class'%>
-        <param key="<%= key %>" value="<%= @connectors[connector_name][key] %>"/><%
+         <param key="<%= key %>" value="<%= @connectors[connector_name][key] %>"/><%
         end
       end
     else %>
       ERROR: Puppet config is bad connector <%= connector_name %> should have a factory-class set.<%
     end%>
-    </connector>
+      </connector>
 <%end
 end%>
-    <acceptors><% 
+   </connectors>
+   <acceptors><% 
 if not @acceptors %>
       <acceptor name="netty">
          <factory-class>org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory</factory-class>
@@ -71,7 +72,7 @@ else
       </acceptor>
 <%end
 end%>
-    </acceptors>
+   </acceptors>
    
    
    <security-settings>
