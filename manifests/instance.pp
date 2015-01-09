@@ -254,13 +254,13 @@ define hornetq::instance (
   }
   
   if $auto_start {
-    $service_ensure = running
+    service{ "hornet_${instancename}.sh":
+      ensure => running,
+      enable => $start_at_os_boot
+    }
   } else {
-    $service_ensure = stopped
-  }
-  
-  service{ "hornet_${instancename}.sh":
-    ensure => $service_ensure,
-    enable => $start_at_os_boot
+    service{ "hornet_${instancename}.sh":
+      enable => $start_at_os_boot
+    }
   }
 }
