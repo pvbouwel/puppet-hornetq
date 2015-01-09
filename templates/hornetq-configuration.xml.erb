@@ -5,7 +5,8 @@
    <journal-min-files>10</journal-min-files>
    <large-messages-directory><%= @_largemessagesdir %></large-messages-directory>
 
-   <connectors>
+   <connectors><% 
+if not @connectors %>
       <connector name="netty">
          <factory-class>org.hornetq.core.remoting.impl.netty.NettyConnectorFactory</factory-class>
          <param key="host"  value="${hornetq.remoting.netty.host:0.0.0.0}"/>
@@ -17,9 +18,25 @@
          <param key="host"  value="${hornetq.remoting.netty.host:0.0.0.0}"/>
          <param key="port"  value="${hornetq.remoting.netty.batch.port:5455}"/>
          <param key="batch-delay" value="50"/>
-      </connector>
+      </connector><% 
+else 
+  @connectors.keys.sort.each do |connector_name| %>
+    <connector name="<%= connector_name %>"><%
+    if @connectors[connector_name] and @connectors[connector_name]['factory-class'] %>
+      <factory-class><%= @connectors[connector_name]['factory-class'] %></factory-class><%
+      @connectors[connector_name].keys.sort.each do |key| 
+        if key != 'factory-class'%>
+        <param key="<%= key %>" value="<%= @connectors[connector_name][key] %>"/><%
+        end
+      end
+    else %>
+      ERROR: Puppet config is bad connector <%= connector_name %> should have a factory-class set.<%
+    end%>
+    </connector>
+<%end
+end%>
    </connectors>
-
+   
    <acceptors>
       <acceptor name="netty">
          <factory-class>org.hornetq.core.remoting.impl.netty.NettyAcceptorFactory</factory-class>

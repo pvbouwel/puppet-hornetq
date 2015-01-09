@@ -12,6 +12,10 @@
 # - $confdir is the location of the configuration directory.  This directory
 #   will hold the configuration specific to this instance. Default is 
 #   ${basedir}/${instance_name}/conf
+# - $connectors contains the connectors defined for the HornetQ. Connectors is
+#   a hash map where the key is the connector name and the value is a new hash
+#   map with at least the 'factory-class' key and if necessary other key-value
+#   pairs to define configuration.
 # - $datadir is the location of the data directory.  This data directory
 #   will hold all the data subdirectories unless they where configured
 #   to reside elsewhere. Default is ${basedir}/${instance_name}/data.
@@ -33,6 +37,7 @@ define hornetq::instance (
   $bindingsdir      = undef,
   $bindir           = undef,
   $confdir          = undef,
+  $connectors       = undef,
   $datadir          = undef,
   $ensure           = present,
   $group            = root,
