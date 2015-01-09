@@ -146,17 +146,48 @@ case "$1" in
     set_nr_processes
     if [ "$NR_PROCESSES" = "1" ]
     then
-      /bin/su $USER -c $DAEMON_PATH/stop.sh &>/dev/null
-      echo "Ok"
-      if [ -f $PIDFILE ]; then
-        rm -f $PIDFILE
-      else
-        echo ""
-        echo "pidfile was not found -> not cleaned up"
+      if [ ! -f $PIDFILE ]; then
+        write_pidfile
       fi
+      /bin/su $USER -c $DAEMON_PATH/stop.sh &>/dev/null
+      
+      counter=0
+      while [ "$NR_PROCESSES" = "1" ]
+      do
+        if [ "$counter" = "$timeout" ]
+        then
+          echo "Timed out"
+          echo "Killing process (`cat $PIDFILE`) because HornetQ was not stopped after $timeout seconds" >> "${LOGFILE}"
+          kill `cat $PIDFILE`
+          counter2=0
+          while [ "$NR_PROCESSES" = "1" ]
+          do
+            if [ "$counter2" = "$timeout" ]
+            then
+              echo "Timed out"
+              echo "Hard killing process (`cat $PIDFILE`) because HornetQ was not stopped after again $timeout seconds" >> "${LOGFILE}"
+              kill -9 `cat $PIDFILE`
+            else
+              echo -n "."
+              sleep 1
+              counter2=$((counter2+1))
+              set_nr_processes
+            fi
+          done
+        else
+          echo -n "."
+          sleep 1
+          counter=$((counter+1))
+          set_nr_processes
+        fi
+      done
+      
+      rm -f $PIDFILE
+      echo "Ok"
       exit 0
     else
-      echo "Failed" 
+      echo "Was already stopped"
+      exit 0 
     fi      
     ;;
   restart)
