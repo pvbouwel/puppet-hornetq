@@ -8,7 +8,14 @@
 export HORNETQ_HOME=/usr/local/hornetq/<%= @version %>
 export HORNETQ_BIN=${HORNETQ_HOME}/bin
 
-# By default, the server is started in the non-clustered standalone configuration
+<% if @owner != 'root' %>
+# Root should not run this script
+if [ "$UID" = "0" ]
+then
+  echo "Dear root, please su to an appropriate user (<%= @owner %>)."
+  exit 666
+fi
+<% end %>
 
 CONFIG_DIR=<%= @_confdir %>
 FILENAME=hornetq-beans.xml
