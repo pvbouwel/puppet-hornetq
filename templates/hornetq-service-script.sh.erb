@@ -20,6 +20,7 @@ USER=<%= @owner %>
 DAEMON_PATH=<%= @_instancedir %>/bin
 PID=$NAME
 PIDFILE=/var/run/$NAME.pid
+LOGFILE="<%= @_logdir %>/<%= @_logfile %>"
 
 if [ 0 -ne 0 ]; then
    echo "You need root privileges to run this script"
@@ -50,15 +51,15 @@ function report_running() {
 
 #Return 0 if hornetQ is live
 function is_started_succesfully() {
-  tail -n 10000 <%= @_logdir %>/<%= @_logfile %> | grep "Server is now live" &>/dev/null
+  tail -n 10000 "${LOGFILE}" | grep "Server is now live" &>/dev/null
   result="$?"
   return "$result"
 }
 
 function rotate_log() {
-  if [ -f <%= @_logdir %>/<%= @_logfile %> ]
+  if [ -f "${LOGFILE}" ]
   then
-    mv "<%= @_logdir %>/<%= @_logfile %>"{,`date +%H%M%S_%d%m%Y`}
+    mv "${LOGFILE}"{,`date +%H%M%S_%d%m%Y`}
   fi
 }
   
@@ -109,6 +110,9 @@ case "$1" in
            if [ "$counter" = "$timeout" ]
            then
              echo "Timed out"
+             echo "Killing process (`cat $PIDFILE`) because HornetQ was not live before timeout" >> "${LOGFILE}"
+             kill `cat $PIDFILE`
+             rm $PIDFILE
              exit 1
            else
              echo -n "."
