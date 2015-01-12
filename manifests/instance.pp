@@ -49,6 +49,8 @@
 # - owner is the OS user that owns the HornetQ instance (default=root).
 # - pagingdir is the location of the "paging-directory". If the parameter is
 #   not set it will default to ${datadir}/paging
+# - security_enabled is used to manipulate the security-enabled setting
+#   if security is not enabled you are not allowed to set security_settings
 # - security_settings is a hash that holds the security settings it has the 
 #   following form: ```
 #     security_settings:
@@ -85,6 +87,7 @@ define hornetq::instance (
   $largemessagesdir  = undef,
   $owner             = root,
   $pagingdir         = undef,
+  $security_enabled  = true,
   $security_settings = undef,
   $start_at_os_boot  = true,
   $templates         = {},
@@ -100,7 +103,6 @@ define hornetq::instance (
   } else {
     $_instancedir = "${basedir}/${instancename}"
   }
-  
   if $confdir {
     $_confdir = $confdir
   }else {
@@ -161,6 +163,10 @@ define hornetq::instance (
      ensure => directory,
      owner => $owner,
      group => $group
+  }
+  
+  if ! $security_enabled and $security_settings {
+    warning('When security is not enabled you should not set security_settings')    
   }
   
   if $jmsconfig != {} {
@@ -298,4 +304,5 @@ define hornetq::instance (
       enable => $start_at_os_boot
     }
   }
+
 }
