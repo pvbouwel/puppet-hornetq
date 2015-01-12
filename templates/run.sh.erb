@@ -35,4 +35,4 @@ done
 echo "***********************************************************************************"
 echo "java $JVM_ARGS -classpath $CLASSPATH org.hornetq.integration.bootstrap.HornetQBootstrapServer $FILENAME"
 echo "***********************************************************************************"
-nohup java -javaagent:$HORNETQ_HOME/lib/JMXAgent.jar -Dbe.ipc.rmi.agent.port=1199 $JVM_ARGS -classpath $CLASSPATH -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false org.hornetq.integration.bootstrap.HornetQBootstrapServer $FILENAME &
+nohup java -javaagent:$HORNETQ_HOME/lib/JMXAgent.jar $JVM_ARGS -classpath $CLASSPATH -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false org.hornetq.integration.bootstrap.HornetQBootstrapServer $FILENAME &
