@@ -165,8 +165,8 @@ define hornetq::instance (
      group => $group
   }
   
-  if ! $security_enabled and $security_settings {
-    warning('When security is not enabled you should not set security_settings')    
+  if $security_enabled == false and $security_settings != undef {
+    warning("When security is not enabled setting security_settings won't have any impact!")    
   }
   
   if $jmsconfig != {} {
