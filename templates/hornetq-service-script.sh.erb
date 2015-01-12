@@ -20,7 +20,8 @@ USER=<%= @owner %>
 DAEMON_PATH=<%= @_instancedir %>/bin
 PID=$NAME
 PIDFILE=/var/run/$NAME.pid
-LOGFILE="<%= @_logdir %>/<%= @_logfile %>"
+LOG_DIR="<%= @_logdir %>"
+LOGFILE="${LOG_DIR}/<%= @_logfile %>"
 
 if [ 0 -ne 0 ]; then
    echo "You need root privileges to run this script"
@@ -111,6 +112,7 @@ case "$1" in
            then
              echo "Timed out"
              echo "Killing process (`cat $PIDFILE`) because HornetQ was not live before timeout" >> "${LOGFILE}"
+             echo "Check for $LOG_DIR/run.sh.errors & $LOG_DIR/run.sh.log for troubleshooting."
              kill `cat $PIDFILE`
              rm $PIDFILE
              exit 1
