@@ -76,8 +76,11 @@ end%>
 <%
 if not @security_enabled %>
    <security-enabled>false</security-enabled>
-  
-<%else %>
+   
+<%if @security_settings
+    warning("When security is not enabled setting security_settings won't have any impact!") 
+  end
+else %>
    <security-settings><%
   if not @security_settings %>
       <security-setting match="#">

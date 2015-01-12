@@ -165,10 +165,6 @@ define hornetq::instance (
      group => $group
   }
   
-  if $security_enabled == false and $security_settings != undef {
-    warning("When security is not enabled setting security_settings won't have any impact!")    
-  }
-  
   if $jmsconfig != {} {
     if has_key($jmsconfig, 'connection_factories') {
       $connection_factories = $jmsconfig['connection_factories']  
