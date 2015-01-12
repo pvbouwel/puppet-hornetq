@@ -37,6 +37,8 @@
 #   will hold all the data subdirectories unless they where configured
 #   to reside elsewhere. Default is ${basedir}/${instance_name}/data.
 # - group is the OS group that owns the HornetQ instance (default=root).
+# - java_opts are the java options you want to pass at the jvm startup. default
+#   value '-XX:+UseParallelGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods'
 # - jmsconfig is a hash that defines a jms-config.xml configuration
 # - journaldir is the location of the "journal-directory". If the parameter is
 #   not set it will default to ${datadir}/journal
@@ -61,6 +63,8 @@
 # - templates is a hash in which you can override the used templates currently
 #   the following templates can be overwritten:
 #      * jms_config.xml (jms-config.xml)
+# - xms is the initial heap size (java Xms flag), default value 1024M
+# - xmx is the maximum heap size (java Xmx flag), default value 1024
 define hornetq::instance (
   $acceptors         = undef,
   $address_settings  = undef,
@@ -73,6 +77,7 @@ define hornetq::instance (
   $datadir           = undef,
   $ensure            = present,
   $group             = root,
+  $java_opts         = '-XX:+UseParallelGC -XX:+AggressiveOpts -XX:+UseFastAccessorMethods',
   $jmsconfig         = {},
   $journaldir        = undef,
   $logdir            = undef,
@@ -84,6 +89,8 @@ define hornetq::instance (
   $start_at_os_boot  = true,
   $templates         = {},
   $version           = $::hornetq::version,
+  $xms               = "1024M", 
+  $xmx               = "1024M"
 ) {
   
   $instancename        = $title
