@@ -18,6 +18,7 @@ fi
 <% end %>
 
 CONFIG_DIR=<%= @_confdir %>
+LOG_DIR=<%= @_logdir %>
 FILENAME=hornetq-beans.xml
 
 export CLASSPATH=$CONFIG_DIR:$HORNETQ_HOME/schema/
@@ -35,4 +36,4 @@ done
 echo "***********************************************************************************"
 echo "java $JVM_ARGS -classpath $CLASSPATH org.hornetq.integration.bootstrap.HornetQBootstrapServer $FILENAME"
 echo "***********************************************************************************"
-nohup java -javaagent:$HORNETQ_HOME/lib/JMXAgent.jar $JVM_ARGS -classpath $CLASSPATH -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false org.hornetq.integration.bootstrap.HornetQBootstrapServer $FILENAME &
+nohup java -javaagent:$HORNETQ_HOME/lib/JMXAgent.jar $JVM_ARGS -classpath $CLASSPATH -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false org.hornetq.integration.bootstrap.HornetQBootstrapServer $FILENAME 2>$LOG_DIR/run.sh.errors >$LOG_DIR/run.sh.log &
