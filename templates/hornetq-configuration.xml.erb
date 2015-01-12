@@ -76,34 +76,33 @@ end%>
 <%
 if not @security_enabled %>
    <security-enabled>false</security-enabled>
-   
-<%if @security_settings
-    warning("When security is not enabled setting security_settings won't have any impact!") 
-  end
-else %>
+   <!--<%
+end %>
    <security-settings><%
-  if not @security_settings %>
+if not @security_settings %>
       <security-setting match="#">
          <permission type="createNonDurableQueue" roles="guest"/>
          <permission type="deleteNonDurableQueue" roles="guest"/>
          <permission type="consume" roles="guest"/>
          <permission type="send" roles="guest"/>
       </security-setting><%
-  else
-    @security_settings.keys.sort.each do |match| %>
+else
+  if not @security_enabled
+    warning("When security is not enabled setting security_settings won't have any impact!")
+  end
+  @security_settings.keys.sort.each do |match| %>
       <security-setting match="<%= match %>"> <%
-      @security_settings[match].keys.sort.each do |type| %>
+    @security_settings[match].keys.sort.each do |type| %>
          <permission type="<%= type %>" roles="<%= @security_settings[match][type] %>"/><%
-      end %>
+    end %>
       </security-setting><%
-    end  
-  end %>
+  end  
+end %>
    </security-settings>
 <%
-end
-%>   
-
-
+if not @security_enabled %>
+   --><%
+end %>
    <address-settings><%
 if not @address_settings %>
       <!--default for catch all-->
