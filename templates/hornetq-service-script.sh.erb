@@ -51,7 +51,7 @@ function report_running() {
 
 #Return 0 if hornetQ is live
 function is_started_succesfully() {
-  tail -n 10000 "${LOGFILE}" | grep "Server is now live" &>/dev/null
+  tail -n 10000 "${LOGFILE}" | grep "Server is now live" 2>&1 >/dev/null
   result="$?"
   return "$result"
 }
