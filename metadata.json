@@ -9,7 +9,7 @@
   "project_page": "https://github.com/pvbouwel/puppet-hornetq",
   "requirements": [],
   "source": "git@github.com:pvbouwel/puppet-hornetq.git",
-  "summary": "Setup HornetQ instances",
+  "summary": "Setup HornetQ instances - alfa version",
   "tags": [],
-  "version": "0.1.0"
+  "version": "0.0.1"
 }
