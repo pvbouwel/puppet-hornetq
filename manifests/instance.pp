@@ -215,8 +215,7 @@ define hornetq::instance (
     ensure => present,
     owner => $owner,
     group => $group,
-    content => "$hornetq_logging_properties_content",
-    notify => Service["hornet_${instancename}.sh"]
+    content => "$hornetq_logging_properties_content"
   }
   
   if ! has_key($templates, 'hornetq-beans.xml') {

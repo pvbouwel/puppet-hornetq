@@ -11,5 +11,5 @@
   "source": "git@github.com:pvbouwel/puppet-hornetq.git",
   "summary": "Setup HornetQ instances - alfa version",
   "tags": [],
-  "version": "0.1.0"
+  "version": "0.1.1"
 }
